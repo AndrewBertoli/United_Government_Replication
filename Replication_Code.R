@@ -482,7 +482,6 @@ dev.off()
 
 
 
-# +xlab("Time Since Government Formed (Standardized)")
 
 pdf("UnitedTimeSeriesSlides.pdf", height=4.5, width=5.5)
 ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/8,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+geom_vline(xintercept=-1/16)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, xmax = -0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)+ggtitle("Figure 6: Change in Aggression for Barely\nUnited and Barely Divided Countries")
