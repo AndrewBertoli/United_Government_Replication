@@ -544,6 +544,6 @@ alldems=(merge(dems,nmc,by=c("index","index")))
 sample=close[abs(close$MinDist)<=0.02,]
 
 
-pdf("External_Validity.pdf")
+pdf("External_Validity.pdf",width=5, height=3)
 External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
