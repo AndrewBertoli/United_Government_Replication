@@ -167,7 +167,7 @@ dev.off()
 
 # Testing for a Discontinuity in the Forcing Variable
 
-pdf("ForcingDensity.pdf", height=4.5, width=7.5)
+pdf("ForcingDensity.pdf", height=3, width=7.5)
 m <- ggplot(data[data$Type!=4&data$Democracy==1,], aes(x=MinDist*100))
 m + geom_histogram(fill="cornflowerblue",
                    binwidth=2, color="black",
