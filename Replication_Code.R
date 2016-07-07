@@ -130,7 +130,8 @@ if(tlr$Leg2Second[i]==tlr$StrongestParty[i]){Y[i]=tlr$Leg2SecondPercent[i]-0.5}
 
 pdf("TwoHouseDist.pdf", height=4.5, width=5.5)
 qplot(X,Y,colour=factor(tlr$United))+xlab("Percent of Seats from Controlling House")+
-ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+
+ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),
+axis.title=element_text(size=14),axis.text=element_text(size=13))+
 geom_hline(yintercept=0, colour="black")+theme(legend.position="none")+
 scale_colour_manual(values = c("royalblue4","goldenrod"))
 dev.off()
@@ -341,7 +342,8 @@ f <- f+geom_vline(xintercept=0, linetype="longdash")+
   scale_color_manual(name="",
                      values=c("mediumblue","firebrick3","forestgreen"))+
   xlab("Estimated Treatment Effect\n(Standardized)")+ylab("")+ labs(title="Figure 7. Regression Discontinuity Estimates") 
-  +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=13),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-1,2))
+  +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=13),plot.title = 
+  element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-1,2))
 ggsave("UnitedBiasCorrectedSlides.pdf",width=7,height=3)
 
 
