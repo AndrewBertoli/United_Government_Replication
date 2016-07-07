@@ -106,9 +106,11 @@ xlab("Percent of Seats from Controlling House")
 dev.off()
 
 pdf("TwoBranchDist.pdf", height=4.5, width=5.5)
-
-qplot(X,Y,colour=factor(tbr$United))+xlab("Percent of Seats from Controlling Legislature")+ylab("Percent of Votes from Controlling Presidency")+geom_vline(xintercept=0, colour="black")+theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, colour="black")+theme_bw()+theme(legend.position="none")+scale_colour_manual(values = c("royalblue4","goldenrod"))
-
+qplot(X,Y,colour=factor(tbr$United))+xlab("Percent of Seats from Controlling Legislature")+
+ylab("Percent of Votes from Controlling Presidency")+geom_vline(xintercept=0, colour="black")+
+theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+
+geom_hline(yintercept=0, colour="black")+theme_bw()+theme(legend.position="none")+
+scale_colour_manual(values = c("royalblue4","goldenrod"))
 dev.off()
 
 
@@ -127,15 +129,20 @@ if(tlr$Leg2Second[i]==tlr$StrongestParty[i]){Y[i]=tlr$Leg2SecondPercent[i]-0.5}
 }
 
 pdf("TwoHouseDist.pdf", height=4.5, width=5.5)
-
-qplot(X,Y,colour=factor(tlr$United))+xlab("Percent of Seats from Controlling House")+ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, colour="black")+theme(legend.position="none")+scale_colour_manual(values = c("royalblue4","goldenrod"))
-
+qplot(X,Y,colour=factor(tlr$United))+xlab("Percent of Seats from Controlling House")+
+ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+
+geom_hline(yintercept=0, colour="black")+theme(legend.position="none")+
+scale_colour_manual(values = c("royalblue4","goldenrod"))
 dev.off()
 
 pdf("TwoHouseDistSlides.pdf", height=4.5, width=5.5)
-
-qplot(X,Y,colour=factor(tlr$United))+ labs(title="Figure 3: Strength of Most Powerful Party in\nElections with Two Legislative Bodies")+xlab("Percent of Seats from Controlling House")+ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, colour="black")+scale_colour_manual(values = c("royalblue4","goldenrod"))+theme_bw()+theme(legend.position="none")
-
+qplot(X,Y,colour=factor(tlr$United))+ 
+labs(title="Figure 3: Strength of Most Powerful Party in\nElections with Two Legislative Bodies")+
+xlab("Percent of Seats from Controlling House")+ylab("Percent of Seats from Controlling Senate")+
+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),
+axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, 
+colour="black")+scale_colour_manual(values = c("royalblue4","goldenrod"))+theme_bw()+
+theme(legend.position="none")
 dev.off()
 
 tbr=data[is.na(data$PresVotes)==FALSE&is.na(data$Leg1Seats)==FALSE&is.na(data$Leg2Seats)==FALSE&is.na(data$StrongestParty)==FALSE,]
