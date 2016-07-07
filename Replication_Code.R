@@ -323,7 +323,9 @@ f <- f+geom_vline(xintercept=0, linetype="longdash")+
   geom_point(stat="identity",size=4,fill="white")+
   scale_color_manual(name="",
                      values=c("mediumblue","firebrick3","forestgreen"))+
-  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-0.9,1.5))
+  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+
+   xlim(c(-0.9,1.5))
 
 ggsave("UnitedBiasCorrected.pdf",width=5,height=2)
 
