@@ -164,17 +164,20 @@ tbr$United[tbr$United=="1"]="goldenrod"
 tbr$United[tbr$United=="0"]="royalblue4"
 
 pdf("3dGraphSlides.pdf")
-
-scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",zlab="Percent of Seats from Controlling Senate",type="h",main="Figure 4: Strength of Most Powerful Party in Elections\nwith a President and Two Legislative Bodies",xlim=c(-0.4,0.4),ylim=c(-0.4,0.4),zlim=c(-0.4,0.4));text(3.5,-1.5,"Percent of Votes from Controlling Presidency",srt=40,xpd=TRUE)
-
+scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
+zlab="Percent of Seats from Controlling Senate",type="h",
+main="Figure 4: Strength of Most Powerful Party in Elections\nwith a President and Two Legislative Bodies",
+xlim=c(-0.4,0.4),ylim=c(-0.4,0.4),zlim=c(-0.4,0.4))
+text(3.5,-1.5,"Percent of Votes from Controlling Presidency",srt=40,xpd=TRUE)
 dev.off()
 
 
 
 pdf("3dGraph.pdf")
-
-scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",zlab="Percent of Seats from Controlling Senate",type="h",main="",xlim=c(-0.4,0.4),ylim=c(-0.4,0.4),zlim=c(-0.4,0.4));text(3.5,-1.5,"Percent of Votes from Controlling Presidency",srt=40,xpd=TRUE)
-
+scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
+zlab="Percent of Seats from Controlling Senate",type="h",main="",xlim=c(-0.4,0.4),
+ylim=c(-0.4,0.4),zlim=c(-0.4,0.4));text(3.5,-1.5,"Percent of Votes from Controlling Presidency",
+srt=40,xpd=TRUE)
 dev.off()
 
 
@@ -218,13 +221,21 @@ dev.off()
 
 
 pdf("UnitedBPSlides.pdf", width=7, height=6)
-
-BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited","PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)","ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)","Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",Title="Figure 6. Testing for Balance at Cutpoint")
-
+BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
+"PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
+"ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
+"Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),
+Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",
+Title="Figure 6. Testing for Balance at Cutpoint")
 dev.off()
 
 pdf("UnitedBP.pdf", width=6.5, height=4.5)
-BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited","PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)","ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)","Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",Title="")
+BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
+"PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
+"ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
+"Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),
+Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",
+Title="")
 dev.off()
 
 
@@ -327,8 +338,8 @@ f <- f+geom_vline(xintercept=0, linetype="longdash")+
   geom_point(stat="identity",size=4,fill="white")+
   scale_color_manual(name="",
                      values=c("mediumblue","firebrick3","forestgreen"))+
-  xlab("Estimated Treatment Effect\n(Standardized)")+ylab("")+ labs(title="Figure 7. Regression Discontinuity Estimates") +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=13),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-1,2))
-xlim(c(-1,2))
+  xlab("Estimated Treatment Effect\n(Standardized)")+ylab("")+ labs(title="Figure 7. Regression Discontinuity Estimates") 
+  +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=13),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-1,2))
 ggsave("UnitedBiasCorrectedSlides.pdf",width=7,height=3)
 
 
@@ -342,19 +353,15 @@ Boots=10000
 
 Bandwidth=rdbwselect(close$HighDisputes-close$PreviousHighDisputes,close$MinDist)$bws[1]
 
-RDPlot(close$MinDist,close$HighDisputes-close$PreviousHighDisputes, Bandwidth=Bandwidth,NBoots=Boots, Main="", ylab="Change in High-Level Disptues Initiated per Year", xlab="Vote Share from United Government", Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-2,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear")
-
-# model=lm(HighDisputes~PreviousAggression,close)
-
-# Bandwidth=rdbwselect(model$residuals,close$MinDist)$bws[1]
-
-# RDPlot(close$MinDist,model$residuals,Bandwidth=Bandwidth,NBoots=Boots, Main="", ylab="High-Level Disptues per Year - Predicted Value", xlab="Vote Share from United Government", Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-1.1,1.5),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75,Plot.p.value=FALSE)
+RDPlot(close$MinDist,close$HighDisputes-close$PreviousHighDisputes, Bandwidth=Bandwidth,NBoots=Boots, 
+Main="", ylab="Change in High-Level Disptues Initiated per Year", xlab="Vote Share from United Government", 
+Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-2,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),
+Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear")
 
 dev.off()
 
 
-
-]
 
 
 USA=close[close$Country=="USA",]
@@ -363,7 +370,11 @@ Bandwidth=rdbwselect(USA$HighDisputes-USA$PreviousHighDisputes,USA$MinDist)$bws[
 
 summary(lm(HighDisputes~United+MinDist+I(United*MinDist),USA[abs(USA$MinDist)<=Bandwidth,]))
 
-RDPlot(USA$MinDist,USA$HighDisputes-USA$PreviousHighDisputes, Bandwidth=Bandwidth,NBoots=Boots, Main="", ylab="High-Level Disptues per Year", xlab="Vote Share from United Government", Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-0.1,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75,Plot.p.value=FALSE)
+RDPlot(USA$MinDist,USA$HighDisputes-USA$PreviousHighDisputes, Bandwidth=Bandwidth,NBoots=Boots, Main="", 
+ylab="High-Level Disptues per Year", xlab="Vote Share from United Government", Tick.Marks = 
+c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-0.1,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),
+Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75,Plot.p.value=FALSE)
 
 
 
@@ -375,7 +386,10 @@ Boots=10000
 
 Bandwidth=rdbwselect(close$HighDisputes,close$MinDist)$bws[1]
 
-RDPlot(close$MinDist,close$HighDisputes, Bandwidth=Bandwidth,NBoots=Boots, Main="", ylab="High-Level Disptues per Year", xlab="Vote Share from United Government", Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-0.1,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75,Plot.p.value=FALSE)
+RDPlot(close$MinDist,close$HighDisputes, Bandwidth=Bandwidth,NBoots=Boots, Main="", ylab="High-Level Disptues per Year",
+xlab="Vote Share from United Government", Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-0.1,2),cex.main=1.2, 
+cex.lab=0.78, Breaks=seq(-.1,1,.02),Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),
+LabelRawData=TRUE,Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75,Plot.p.value=FALSE)
 
 dev.off()
 
@@ -431,24 +445,38 @@ Wars=as.Date(c("1812-6-18","1846-4-25","1899-6-2","1917-4-1","1942-12-8","1950-7
 
 United.At.Time=c(1,1,1,1,1,1,1,0,1)
 
-WarsNames=c("War of 1812","Mexican-American War","Spanish-American War","World War I","World War II","Korean War","Vietnam War","War in Afghanistan","War in Iraq")
+WarsNames=c("War of 1812","Mexican-American War","Spanish-American War","World War I","World War II","Korean War","Vietnam War",
+"War in Afghanistan","War in Iraq")
 
 USwars=data.frame(Wars,United.At.Time,Wars)
 
 pdf("HistoricalUS.pdf", width=11, height=2.5)
 
-ggplot(USA,aes(USA$BeginDate,USA$United))+geom_segment(aes(xend=USA$EndDate,yend=USA$United),size=11,color="cornflowerblue")+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+scale_colour_manual(" ",values=rep("black",10))+ylab(" ")+xlab("")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x = element_text(vjust=-0.7),axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",vjust=2,hjust=1.25))+ scale_y_continuous(breaks=c(0,1),labels=c("Divided","United"),limits=c(-.125,1.125))+theme(legend.position="none")
+ggplot(USA,aes(USA$BeginDate,USA$United))+geom_segment(aes(xend=USA$EndDate,yend=USA$United),size=11,color="cornflowerblue")+
+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+scale_colour_manual(" ",values=rep("black",10))+
+ylab(" ")+xlab("")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x = element_text(vjust=-0.7),
+axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",vjust=2,hjust=1.25))+
+scale_y_continuous(breaks=c(0,1),labels=c("Divided","United"),limits=c(-.125,1.125))+theme(legend.position="none")
 
 dev.off()
 
 pdf("HistoricalUSSlides.pdf", width=11, height=2.5)
 
-ggplot(USA,aes(USA$BeginDate,USA$United))+geom_segment(aes(xend=USA$EndDate,yend=USA$United),size=11,color="cornflowerblue")+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+scale_colour_manual(" ",values=rep("black",10))+ylab(" ")+xlab("")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x = element_text(vjust=-0.7),axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",vjust=2,hjust=1.25))+labs(title="Figure 1. Interstate Wars with at Least 1,000 U.S. Battle Deaths")+ scale_y_continuous(breaks=c(0,1),labels=c("Divided","United"),limits=c(-.125,1.125))+theme(legend.position="none")
+ggplot(USA,aes(USA$BeginDate,USA$United))+geom_segment(aes(xend=USA$EndDate,yend=USA$United),size=11,color="cornflowerblue")+
+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+scale_colour_manual(" ",
+values=rep("black",10))+ylab(" ")+xlab("")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x = element_text(vjust=-0.7),
+axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",vjust=2,hjust=1.25))+
+labs(title="Figure 1. Interstate Wars with at Least 1,000 U.S. Battle Deaths")+ scale_y_continuous(breaks=c(0,1),
+labels=c("Divided","United"),limits=c(-.125,1.125))+theme(legend.position="none")
 
 dev.off()
 
 
-z=ggplot(USA,aes(USA$BeginDate,USA$United))+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+scale_colour_manual(" ",values=rep("black",10))+ylab(" ")+xlab("Year")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x = element_text(vjust=-0.7),axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",vjust=2,hjust=1.25))+labs(title="Figure 8. Interstate Wars with at Least 1,000 U.S. Battle Deaths")+theme(legend.position="none")
+z=ggplot(USA,aes(USA$BeginDate,USA$United))+geom_point(data=USwars,aes(x=Wars,y=United.At.Time,colour=WarsNames),size=5,fill="white")+
+scale_colour_manual(" ",values=rep("black",10))+ylab(" ")+xlab("Year")+theme_bw()+theme(axis.text=element_text(size=20),axis.title.x =
+ element_text(vjust=-0.7),axis.title=element_text(size=20),plot.title = element_text(lineheight=1.8,size=rel(2),face="bold",
+ vjust=2,hjust=1.25))+labs(title="Figure 8. Interstate Wars with at Least 1,000 U.S. Battle Deaths")+theme(legend.position="none")
+ 
 out=py$ggplotly(z,kwargs=list(filename="gg-basic-segment", fileopt="overwrite"))
 
 
@@ -487,7 +515,8 @@ cbind(Countries[ord],new_results[ord,],n[ord])
 
 t=close[close$United==1&abs(close$MinDist)<=0.02,]
 c=close[close$United==0&abs(close$MinDist)<=0.02,]
-dates=c("Date1","Date2","Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10","Date11","Date12","Date13","Date14","Date15","Date16","Date17","Date18","Date19","Date20")
+dates=c("Date1","Date2","Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10","Date11","Date12","Date13",
+"Date14","Date15","Date16","Date17","Date18","Date19","Date20")
 t.dates=as.numeric(unlist(as.vector(t[,dates]))[is.na(unlist(as.vector(t[,dates])))==FALSE])
 c.dates=as.numeric(unlist(as.vector(c[,dates]))[is.na(unlist(as.vector(c[,dates])))==FALSE])
 tsdat=data.frame(rbind(cbind(t.dates,0),cbind(c.dates,1)));colnames(tsdat)=c("Date","Status")
@@ -495,7 +524,15 @@ tsdat[,1]=tsdat[,1]-1/16 # Recentering the graph
 
 
 pdf("UnitedTimeSeries.pdf", height=4, width=5.5)
-ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/8,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+geom_vline(xintercept=-1/16)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, xmax = -0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)
+ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/8,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+
+geom_vline(xintercept=-1/16)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, 
+xmax = -0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = 
+c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),
+axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ 
+theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+
+geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+
+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+
+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)
 dev.off()
 
 
@@ -506,7 +543,15 @@ dev.off()
 
 
 pdf("UnitedTimeSeriesSlides.pdf", height=4.5, width=5.5)
-ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/8,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+geom_vline(xintercept=-1/16)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, xmax = -0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)+ggtitle("Figure 6: Change in Aggression for Barely\nUnited and Barely Divided Countries")
+ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/8,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+
+geom_vline(xintercept=-1/16)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, xmax = 
+-0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = 
+c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),
+axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ 
+theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+ 
+geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+
+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+
+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)+ggtitle("Figure 6: Change in Aggression for Barely\nUnited and Barely Divided Countries")
 dev.off()
 
 
@@ -539,13 +584,23 @@ dev.off()
 
 
 pdf("UnitedBPSlides.pdf", width=7, height=9)
-
-BalancePlot(close,close$United, c("irst","lnirst","milex","lnmilex","milper","lnmilper","pec","lnpec","tpop","lntpop","upop","lnupop","PrevUnited","PreviousHighDisputes","PreviousLowDisputes"),c("Iron and Steel Production","ln(Iron and Steel Production)","Military Expenditures","ln(Military Expenditures)","Military Personnel","ln(Military Personnel)","Energy Consumption","ln(Energy Consumption)","Total Population","ln(Total Population)","Urban Population","ln(Urban Population)","Previously United", "Previous High-Level Disputes", "Previous Low-Level Disputes"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",Title="Figure 6. Testing for Balance at Cutpoint")
-
+BalancePlot(close,close$United, c("irst","lnirst","milex","lnmilex","milper","lnmilper","pec","lnpec","tpop",
+"lntpop","upop","lnupop","PrevUnited","PreviousHighDisputes","PreviousLowDisputes"),
+c("Iron and Steel Production","ln(Iron and Steel Production)","Military Expenditures","ln(Military Expenditures)",
+"Military Personnel","ln(Military Personnel)","Energy Consumption","ln(Energy Consumption)","Total Population",
+"ln(Total Population)","Urban Population","ln(Urban Population)","Previously United", "Previous High-Level Disputes",
+"Previous Low-Level Disputes"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",
+Point.Color="Black",Title="Figure 6. Testing for Balance at Cutpoint")
 dev.off()
 
 pdf("UnitedBP.pdf", width=6.5, height=6.5)
-BalancePlot(close,close$United, c("irst","lnirst","milex","lnmilex","milper","lnmilper","pec","lnpec","tpop","lntpop","upop","lnupop","PrevUnited","PreviousHighDisputes","PreviousLowDisputes"),c("Iron and Steel Production","ln(Iron and Steel Production)","Military Expenditures","ln(Military Expenditures)","Military Personnel","ln(Military Personnel)","Energy Consumption","ln(Energy Consumption)","Total Population","ln(Total Population)","Urban Population","ln(Urban Population)","Previously United", "Previous High-Level Disputes", "Previous Low-Level Disputes"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",Title="")
+BalancePlot(close,close$United, c("irst","lnirst","milex","lnmilex","milper","lnmilper","pec","lnpec","tpop",
+"lntpop","upop","lnupop","PrevUnited","PreviousHighDisputes","PreviousLowDisputes"),
+c("Iron and Steel Production","ln(Iron and Steel Production)","Military Expenditures","ln(Military Expenditures)",
+"Military Personnel","ln(Military Personnel)","Energy Consumption","ln(Energy Consumption)","Total Population",
+"ln(Total Population)","Urban Population","ln(Urban Population)","Previously United", "Previous High-Level Disputes", 
+"Previous Low-Level Disputes"),Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",
+Point.Color="Black",Title="")
 dev.off()
 
 
@@ -567,11 +622,15 @@ sample=close[abs(close$MinDist)<=0.02,]
 
 
 pdf("External_Validity.pdf",width=5, height=3)
-External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
+External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), 
+Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
+"Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
 
 
 
 pdf("External_Validity2.pdf",width=5, height=4.3)
-External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
+External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), 
+Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
+"Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
