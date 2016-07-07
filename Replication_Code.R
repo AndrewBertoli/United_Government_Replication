@@ -42,7 +42,11 @@ close=data[abs(data$MinDist)<=0.1&is.na(data$MinDist)==FALSE&data$Type!=4&data$D
 setwd("/Users/andrewbertoli/Dropbox/United Government/ReplicationCode")
 polity=read.csv("Polity.csv",stringsAsFactors=FALSE)
 
-countries=c("Bolivia","Brazil","Burundi","Colombia","Dominican Rep","Mexico","United States","Uruguay","","","Australia", "Belgium","Czech Republic","Italy", "Japan","Spain", "Turkey","","","Austria","Cape Verde","Costa Rica","Croatia","Ecuador","France","El Salvador","Ghana","Guatemala","Honduras","Ireland","Kenya","Madagascar","Malawi","Mali","Mongolia","Nicaragua","Panama","Portugal","Korea South","Taiwan")
+countries=c("Bolivia","Brazil","Burundi","Colombia","Dominican Rep","Mexico","United States",
+"Uruguay","","","Australia", "Belgium","Czech Republic","Italy", "Japan","Spain", "Turkey",
+"","","Austria","Cape Verde","Costa Rica","Croatia","Ecuador","France","El Salvador",
+"Ghana","Guatemala","Honduras","Ireland","Kenya","Madagascar","Malawi","Mali","Mongolia",
+"Nicaragua","Panama","Portugal","Korea South","Taiwan")
 
 dems=polity[polity$polity>=6&polity$year%in%1815:2010&polity$country%in%countries,]
 
@@ -53,7 +57,9 @@ countries[countries=="Korea South"]="South Korea"
 tick_colors=rep("black",length(countries))
 tick_colors[countries==""]="white"
 
-ylab="       Bicameral       Bicameral                 Unicameral                        \n     Presidential   Parlimentary              Presidential                       \n   Systems         Systems                    Systems                     "
+ylab="       Bicameral       Bicameral                 Unicameral                        \n     
+Presidential   Parlimentary              Presidential                       \n   Systems         
+Systems                    Systems                     "
 
 dems$Type=NA
 dems$Type[dems$index<=8]="dodgerblue"
@@ -62,7 +68,12 @@ dems$Type[dems$index>8&dems$index>18]="darkorange"
 
 
 pdf("DemocracyYears.pdf",height=6,width=9)
-ggplot(dems,aes(dems$year,dems$index))+geom_segment(aes(xend=dems$year+1,yend=dems$index),size=1,color=dems$Type) +ylab(ylab) +xlab("Years Countries Were Democracies")+theme_bw()+theme(legend.position="none")+scale_y_continuous(breaks=1:length(countries),labels=countries) +theme(axis.ticks.y=element_line(color=tick_colors))+scale_colour_gradientn(colours=rainbow(3))+theme(axis.title.y=element_text(size=13.5,face="bold"),axis.title.x=element_text(size=17),axis.text.x=element_text(size=15))
+ggplot(dems,aes(dems$year,dems$index))+geom_segment(aes(xend=dems$year+1,yend=dems$index),size=1,
+color=dems$Type) +ylab(ylab) +xlab("Years Countries Were Democracies")+theme_bw()+
+theme(legend.position="none")+scale_y_continuous(breaks=1:length(countries),labels=countries) +
+theme(axis.ticks.y=element_line(color=tick_colors))+scale_colour_gradientn(colours=rainbow(3))+
+theme(axis.title.y=element_text(size=13.5,face="bold"),axis.title.x=element_text(size=17),
+axis.text.x=element_text(size=15))
 dev.off()
 
 
@@ -85,9 +96,13 @@ if(tbr$PresSecond[i]==tbr$StrongestParty[i]&tbr$Pres[i]!=tbr$PresSecond[i]){Y[i]
 
 
 pdf("TwoBranchDistSlides.pdf", height=4.5, width=5.5)
-
-qplot(X,Y,colour=factor(tbr$United))+xlab("Percent of Seats from Controlling Legislature")+ylab("Percent of Votes from Controlling Presidency")+geom_vline(xintercept=0, colour="black")+theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, colour="black")+theme_bw()+theme(legend.position="none")+scale_colour_manual(values = c("royalblue4","goldenrod"))+ labs(title="Figure 2: Strength of Most Powerful Party in\nElections with a President and Legislature")+ xlab("Percent of Seats from Controlling House")
-
+qplot(X,Y,colour=factor(tbr$United))+xlab("Percent of Seats from Controlling Legislature")+
+ylab("Percent of Votes from Controlling Presidency")+geom_vline(xintercept=0, colour="black")+
+theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))
++geom_hline(yintercept=0, colour="black")+theme_bw()+theme(legend.position="none")+
+scale_colour_manual(values = c("royalblue4","goldenrod"))+ 
+labs(title="Figure 2: Strength of Most Powerful Party in\nElections with a President and Legislature")+
+xlab("Percent of Seats from Controlling House")
 dev.off()
 
 pdf("TwoBranchDist.pdf", height=4.5, width=5.5)
@@ -167,7 +182,7 @@ dev.off()
 
 # Testing for a Discontinuity in the Forcing Variable
 
-pdf("ForcingDensity.pdf", height=3, width=7.5)
+pdf("ForcingDensity.pdf", height=4.5, width=7.5)
 m <- ggplot(data[data$Type!=4&data$Democracy==1,], aes(x=MinDist*100))
 m + geom_histogram(fill="cornflowerblue",
                    binwidth=2, color="black",
@@ -545,5 +560,11 @@ sample=close[abs(close$MinDist)<=0.02,]
 
 
 pdf("External_Validity.pdf",width=5, height=3)
+External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
+dev.off()
+
+
+
+pdf("External_Validity2.pdf",width=5, height=4.3)
 External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
