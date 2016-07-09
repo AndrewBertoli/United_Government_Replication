@@ -630,11 +630,3 @@ External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper
 Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
 "Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
-
-
-
-pdf("External_Validity2.pdf",width=5, height=4.3)
-External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), 
-Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
-"Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
-dev.off()
