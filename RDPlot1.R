@@ -44,7 +44,7 @@ LabelRawData=FALSE, Labels, RawDataLabelSize=1, ...)
         plot(negative.midpoints, dat[, 2][midpoints < C], xlab = xlab, 
             ylab = ylab, main = Main, col = Mean.Colors[1], xlim = xlim, 
             ylim = ylim, pch = 16, cex = pointsize[midpoints < 
-                C], xaxt = "n", cex.main=cex.main,cex.lab=cex.lab,... )
+                C], xaxt = "n",cex.main=cex.main,cex.lab=cex.lab,... )
         points(positive.midpoints, dat[, 2][midpoints > C], col = Mean.Colors[2], 
             pch = 16, cex = pointsize[midpoints > C])
     }
@@ -417,7 +417,7 @@ return(combined)
         abline(v = Window[1], lty = 2)
         abline(v = Window[2], lty = 2)
     }
-    axis(1, at = Tick.Marks, labels = Tick.Marks)
+    axis(1, at = Tick.Marks, labels = c("-10%","-5%","0%","5%","10%"))
     p = 2 * length(which(bootstrapmatrix2[which(bootstrapmatrix2[, 
         1] == C), 2] - bootstrapmatrix1[which(bootstrapmatrix1[, 
         1] == C), 2] < 0))/NBoots
@@ -480,11 +480,11 @@ X=X[X > -Bandwidth & X < Bandwidth]
             
                 nx <- xl + 0.5 * w
                 ny <- yl + 0.5 * h
-                lines(c(X[i], nx+ 0.025*(2*as.numeric(X[i]>0)-1)), c(Y[i], ny+ 0.4*(3.7*as.numeric(Y[i]> 0)-2.2) - 0.12*as.numeric(Y[i]> 0)*as.numeric(X[i]> 0) + 0.22*as.numeric(Y[i]< 0)*as.numeric(X[i]> 0) + 0.1*as.numeric(Y[i]> 0)*as.numeric(X[i]<0)), col = "grey")
+                lines(c(X[i], nx+ 0.025*(2*as.numeric(X[i]>0)-1)), c(Y[i], ny- (1-(Y[i]))*0.075*as.numeric(Y[i]> 0) + 1/(Y[i])*-0.075*as.numeric(Y[i]< 0) - 0.1*as.numeric(Y[i]< 0) + 0.02*as.numeric(Y[i]> 0) + 0.4*(3.7*as.numeric(Y[i]> 0)-2.2) - 0.12*as.numeric(Y[i]> 0)*as.numeric(X[i]> 0) + 0.22*as.numeric(Y[i]< 0)*as.numeric(X[i]> 0) + 0.1*as.numeric(Y[i]> 0)*as.numeric(X[i]<0)), col = "grey")
             
         
     }
-    text(lay[, 1] + 0.5 * lay[, 3]+ 0.025*(2*as.numeric(X>0)-1), lay[, 2] + 0.5 * lay[, 4]+ 0.4*(3.7*as.numeric(Y> 0)-2.2) - 0.12*as.numeric(Y> 0)*as.numeric(X> 0) + 0.22*as.numeric(Y< 0)*as.numeric(X> 0) + 0.1*as.numeric(Y> 0)*as.numeric(X<0) , 
+    text(lay[, 1] + 0.5 * lay[, 3]+ 0.025*(2*as.numeric(X>0)-1), lay[, 2] - (1-(lay[, 2]))*0.075*as.numeric(Y> 0) + 1/(lay[, 2])*-0.075*as.numeric(Y< 0) - 0.1*as.numeric(Y< 0) + 0.02*as.numeric(Y> 0) + 0.5 * lay[, 4]+ 0.4*(3.7*as.numeric(Y> 0)-2.2) - 0.12*as.numeric(Y> 0)*as.numeric(X> 0) + 0.22*as.numeric(Y< 0)*as.numeric(X> 0) + 0.1*as.numeric(Y> 0)*as.numeric(X<0) , 
         Labels, cex = RawDataLabelSize, ...)}	
 
 
