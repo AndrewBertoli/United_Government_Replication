@@ -430,9 +430,70 @@ t.test(HighDisputes-PreviousHighDisputes~United,close[abs(close$MinDist)<0.005,]
 
 model=lm(HighDisputes-PreviousHighDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
 
-close$residuals=close$HighDisputes-predict(model,close)
+close$residuals=close$HighDisputes-close$PreviousHighDisputes-predict(model,close)
 
 rdrobust(close$residuals,close$MinDist, all=TRUE)
+
+
+
+
+model=lm(Aggression-PreviousAggression~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$Aggression-close$PreviousAggression-predict(model,close)
+est1=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+
+model=lm(HighDisputes-PreviousHighDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$HighDisputes-close$PreviousHighDisputes-predict(model,close)
+est2=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+model=lm(LowDisputes-PreviousLowDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$LowDisputes-close$PreviousLowDisputes-predict(model,close)
+est3=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+
+
+theme_nolegend <- function (base_size = 9, base_family = "", height, width) 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          legend.position="none", 
+          axis.ticks = element_line(colour = "black"), 
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA,colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80",  colour = "grey50"), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50"))
+}
+# summary results:
+cd <- as.data.frame(matrix(NA,3,5))
+conditions <- c("All Disputes Initiated","High-Level Disputes Initiated","Low-Level Disputes Initiated")
+names(cd) <- c("mean","se","measure")
+cd$mean <- as.numeric(c(est1[1],est2[1],est3[1]))
+cd$lower <- as.numeric(c(est1[2],est2[2],est3[2]))
+cd$upper <- as.numeric(c(est1[3],est2[3],est3[3]))
+cd$ord <- c(3,2,1)
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+  geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+  geom_point(stat="identity",size=4,fill="white")+
+  scale_color_manual(name="",
+                     values=c("mediumblue","firebrick3","forestgreen"))+
+  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+
+   xlim(c(-1.5,1.5))
+
+ggsave("UnitedControlled.pdf",width=5,height=2)
+
+
 
 
 
