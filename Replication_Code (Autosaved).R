@@ -8,11 +8,13 @@ library(scatterplot3d)
 library(devtools)
 install_github("easyGgplot2", "kassambara")
 library(easyGgplot2)
+library(reshape)
 
 source("RDPlot1.R")
 source("rdplot.R")
 source("rdpointest.R")
 source("BalancePlot.R")
+source("ExternalValidity.R")
 
 setwd("/Users/andrewbertoli/Dropbox/United Government/ReplicationCode")
 data=read.csv("elections.csv",stringsAsFactors=FALSE)
