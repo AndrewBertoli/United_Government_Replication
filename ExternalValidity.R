@@ -54,5 +54,5 @@ return(p2)
 
 
 
-External_Validity(Sample=sample,Population=nmc,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Polulation","Urban Population"),ln=1:6)
+External_Validity(Sample=sample,Population=nmc,Covs=c("irst","milex","milper","pec","tpop","upop"), Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Population","Urban Population"),ln=1:6)
 

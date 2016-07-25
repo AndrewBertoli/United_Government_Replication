@@ -1,4 +1,4 @@
-setwd("/Users/andrewbertoli/Dropbox/United Government/ReplicationCode")
+setwd("/Users/andrewbertoli/Dropbox/Github/United_Government_Replication")
 
 library(ggplot2)
 library(rdrobust)
@@ -8,18 +8,21 @@ library(scatterplot3d)
 library(devtools)
 install_github("easyGgplot2", "kassambara")
 library(easyGgplot2)
+library(reshape)
 
 source("RDPlot1.R")
 source("rdplot.R")
 source("rdpointest.R")
 source("BalancePlot.R")
+source("ExternalValidity.R")
 
+setwd("/Users/andrewbertoli/Dropbox/United Government/ReplicationCode")
 data=read.csv("elections.csv",stringsAsFactors=FALSE)
 
 # First drop cases where the most powerful party controlled exactly 50% 
 # of a legislature body, except for the US Senate (where United is set at 1)
 
-data$MinDist[data$MinDist==0&data$United==0]=NA
+data$MinDist[data$MinDist==0&data$United==0]=NA 
 
 data$MinDist[data$MinDist==0&data$United==1]=0.001
 
@@ -174,7 +177,7 @@ dev.off()
 
 
 
-pdf("3dGraph.pdf")
+pdf("3dRDGraph.pdf")
 scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
 zlab="Percent of Seats from Controlling Senate",type="h",main="",xlim=c(-0.4,0.4),
 ylim=c(-0.4,0.4),zlim=c(-0.4,0.4));text(3.5,-1.5,"Percent of Votes from Controlling Presidency",
@@ -193,7 +196,7 @@ dev.off()
 
 # Testing for a Discontinuity in the Forcing Variable
 
-pdf("ForcingDensity.pdf", height=4.5, width=7.5)
+pdf("ForcingDensity.pdf", height=3, width=7.5)
 m <- ggplot(data[data$Type!=4&data$Democracy==1,], aes(x=MinDist*100))
 m + geom_histogram(fill="cornflowerblue",
                    binwidth=2, color="black",
@@ -202,7 +205,7 @@ m + geom_histogram(fill="cornflowerblue",
   geom_vline(xintercept=0, colour="red")+
   xlab("Percentage of Seats/Votes Away from United Government")+
   ylab("Density") + labs(title="")+
-  scale_x_continuous(breaks=seq(-100, 100, 20))+
+  scale_x_continuous(breaks=seq(-80, 80, 20),labels=c("-80%","-60%","-40%","-20%","0%","20%","40%","60%","80%"))+
   scale_y_continuous(breaks=seq(0, 50, 10))
 dev.off()
 
@@ -351,7 +354,7 @@ ggsave("UnitedBiasCorrectedSlides.pdf",width=7,height=3)
 
 
 
-pdf("UnitedRDLabel.pdf", width=5, height=5)
+pdf("UnitedLabel.pdf", width=5, height=5)
 
 Boots=10000
 
@@ -427,9 +430,144 @@ t.test(HighDisputes-PreviousHighDisputes~United,close[abs(close$MinDist)<0.005,]
 
 model=lm(HighDisputes-PreviousHighDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
 
-close$residuals=close$HighDisputes-predict(model,close)
+close$residuals=close$HighDisputes-close$PreviousHighDisputes-predict(model,close)
 
 rdrobust(close$residuals,close$MinDist, all=TRUE)
+
+
+
+
+
+
+
+
+
+# Figures for the Online Appendix
+
+# Controlling for factors from the balance plot
+
+model=lm(Aggression-PreviousAggression~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$Aggression-close$PreviousAggression-predict(model,close)
+est1=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+
+model=lm(HighDisputes-PreviousHighDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$HighDisputes-close$PreviousHighDisputes-predict(model,close)
+est2=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+model=lm(LowDisputes-PreviousLowDisputes~lnirst+lnmilex+lnmilper+lnpec+lntpop+lnupop+PrevUnited, close) # Add mor covariates here
+close$residuals=close$LowDisputes-close$PreviousLowDisputes-predict(model,close)
+est3=as.numeric(rdrobust(close$residuals,close$MinDist, all=TRUE)[[3]][3,c(1,5:6)])
+
+
+
+theme_nolegend <- function (base_size = 9, base_family = "", height, width) 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          legend.position="none", 
+          axis.ticks = element_line(colour = "black"), 
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA,colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80",  colour = "grey50"), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50"))
+}
+# summary results:
+cd <- as.data.frame(matrix(NA,3,5))
+conditions <- c("All Disputes Initiated","High-Level Disputes Initiated","Low-Level Disputes Initiated")
+names(cd) <- c("mean","se","measure")
+cd$mean <- as.numeric(c(est1[1],est2[1],est3[1]))
+cd$lower <- as.numeric(c(est1[2],est2[2],est3[2]))
+cd$upper <- as.numeric(c(est1[3],est2[3],est3[3]))
+cd$ord <- c(3,2,1)
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+  geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+  geom_point(stat="identity",size=4,fill="white")+
+  scale_color_manual(name="",
+                     values=c("mediumblue","firebrick3","forestgreen"))+
+  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+
+   xlim(c(-1.5,1.5))
+
+ggsave("UnitedControlled.pdf",width=5,height=2)
+
+
+
+
+# Other bandwidths
+
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.01)
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.02)
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.03)
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.04)
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.05)
+
+
+# L2 Distance
+
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$L2,all=TRUE)
+
+
+est1=as.numeric(rdrobust(close$Aggression-close$PreviousAggression,close$L2,all=TRUE)[[3]][3,c(1,5:6)])
+
+est2=as.numeric(rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$L2,all=TRUE)[[3]][3,c(1,5:6)])
+
+est3=as.numeric(rdrobust(close$LowDisputes-close$PreviousLowDisputes,close$L2,all=TRUE)[[3]][3,c(1,5:6)])
+
+
+
+theme_nolegend <- function (base_size = 9, base_family = "", height, width) 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          legend.position="none", 
+          axis.ticks = element_line(colour = "black"), 
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA,colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80",  colour = "grey50"), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50"))
+}
+# summary results:
+cd <- as.data.frame(matrix(NA,3,5))
+conditions <- c("All Disputes Initiated","High-Level Disputes Initiated","Low-Level Disputes Initiated")
+names(cd) <- c("mean","se","measure")
+cd$mean <- as.numeric(c(est1[1],est2[1],est3[1]))
+cd$lower <- as.numeric(c(est1[2],est2[2],est3[2]))
+cd$upper <- as.numeric(c(est1[3],est2[3],est3[3]))
+cd$ord <- c(3,2,1)
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+  geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+  geom_point(stat="identity",size=4,fill="white")+
+  scale_color_manual(name="",
+                     values=c("mediumblue","firebrick3","forestgreen"))+
+  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+
+   xlim(c(-0.9,1.5))
+
+ggsave("UnitedL2.pdf",width=5,height=2)
+
 
 
 
@@ -558,8 +696,6 @@ scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period i
 annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)+ggtitle("Figure 6: Change in Aggression for Barely\nUnited and Barely Divided Countries")
 dev.off()
 
-
-
 two_points=close[abs(close$MinDist)<0.02,]
 
 sum(c$HighDisputes*c$Days/365)
@@ -573,7 +709,7 @@ sum(c$HighDisputes*c$Days/365)
 # Non-dem forcing density
 
 pdf("NonDemForcingDensity.pdf", height=4.5, width=7.5)
-m <- ggplot(data[data$Type!=4&data$Democracy==0,], aes(x=MinDist*100))
+m <- ggplot(data[data$Type!=4&data$Democracy==0&data$MinDist!=0,], aes(x=MinDist*100))
 m + geom_histogram(fill="cornflowerblue",
                    binwidth=2, color="black",
                    origin = -140.001)+
@@ -628,5 +764,5 @@ sample=close[abs(close$MinDist)<=0.02,]
 pdf("External_Validity.pdf",width=5, height=3)
 External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), 
 Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
-"Total Polulation","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
+"Total Population","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
 dev.off()
