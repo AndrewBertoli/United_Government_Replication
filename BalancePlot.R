@@ -144,7 +144,7 @@ BalancePlot=function(Data, Treat, Covariates, Names.To.Print, Shade.Color = "bla
         }
                         if (length(Different.Test)==1) {
             p4 = Different.Test(Data[,covs[i,1]])[3]
-            points(pch = pch, col = Point.Color, 
+            points(pch = pch[1], col = Point.Color[1], 
                    x = p4, y = aty)
         }
         if ("T.Test" %in% Built.In.Tests) {
@@ -173,17 +173,10 @@ BalancePlot=function(Data, Treat, Covariates, Names.To.Print, Shade.Color = "bla
             points(pch = 17, col = Point.Color, x = p2, y = aty)
         }
         if (length(Other.Tests) > 0) {
-            if (length(o.sample) > 0) {
-                for (j in 1:length(Other.Tests)) {
-                    fun = Other.Tests[[j]]
-                    px = as.numeric(fun(covs[i, 1]))
-                    points(pch = pch[j], col = Observational.Point.Color, 
-                           x = px, y = aty)
-                }}
             for (z in 1:length(Other.Tests)) {
                 fun = Other.Tests[[z]]
-                px = as.numeric(fun(covs[i,1]))
-                points(pch = pch[z], col = Point.Color, x = px, 
+                px = as.numeric(fun(close[,covs[i,1]]))
+                points(pch = pch[(z+1)], col = Point.Color[(z+1)], x = px, 
                        y = aty)
             }
         }
@@ -487,6 +480,31 @@ RDTest=function(v){
 output1=rdpointest(v,close$MinDist)
 output2=as.numeric(rdrobust(v,close$MinDist,all=TRUE)[[3]][[3,4]])
 return(c(output1[1],output1[2],output2))}
+
+Conventional=function(v){
+output2=as.numeric(rdrobust(v,close$MinDist,all=TRUE)[[3]][1,4])
+return(output2)}
+
+
+
+Polynomial2=function(v){
+close2=close[abs(close$MinDist)<=0.0183,]
+close2$United2=close2$United^2
+output=summary(lm(v[abs(close$MinDist)<=0.0183]~close2$United+close2$MinDist+I(close2$MinDist*close2$United)+I(close2$MinDist*close2$United2)))$coefficients[2,4]
+return(output)}
+
+
+
+Polynomial3=function(v){
+close2=close[abs(close$MinDist)<=0.0183,]
+close2$United2=close2$United^2
+close2$United3=close2$United^3
+output=summary(lm(v[abs(close$MinDist)<=0.0183]~close2$United+close2$MinDist+I(close2$MinDist*close2$United)+I(close2$MinDist*close2$United2)+I(close2$MinDist*close2$United3)))$coefficients[2,4]
+return(output)}
+
+
+
+
 
 
 WarRDTest=function(v){
