@@ -200,12 +200,10 @@ BalancePlot=function(Data, Treat, Covariates, Names.To.Print, Shade.Color = "bla
                                                                                                                            ")", sep = "")), pch = c(18, 17, 18, 17), col = c(Observational.Point.Color, 
                                                                                                                                                                              Observational.Point.Color, Point.Color, Point.Color))
         }
-        if (length(Built.In.Tests) == 1 & "T.Test" %in% Built.In.Tests & 
-                length(o.sample) > 0) {
-            legend(-1.3, 0.4, cex = 0.6, c(paste("t-test (", 
-                                                 O.Name, ")", sep = ""), paste("t-test (", Sample.Name, 
-                                                                               ")", sep = "")), pch = c(18, 18), col = c(Observational.Point.Color, 
-                                                                                                                         Point.Color))
+        if (length(Different.Test) == 1) {
+            legend(-0.9, 0.5, cex = 0.6, c("Local Linear (rdrobust)","Local Linear (Conventional)", "Local Polynomial")
+                                                 , pch = pch, col = Point.Color) 
+                                                                                                                     
         }
         if (length(Built.In.Tests) == 1 & "KS.Test" %in% Built.In.Tests & 
                 length(o.sample) > 0) {
