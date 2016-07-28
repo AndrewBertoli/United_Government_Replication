@@ -229,7 +229,7 @@ BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop"
 "PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
 "ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
 "Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),
-Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",
+Different.Test=RDTest, Other.Tests=c(Conventional,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","red","blue","green"), Shade.Color="cadetblue2",
 Title="Figure 6. Testing for Balance at Cutpoint")
 dev.off()
 
@@ -237,9 +237,9 @@ pdf("UnitedBP.pdf", width=6.5, height=4.5)
 BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
 "PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
 "ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
-"Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),
-Different.Test=RDTest, Built.In.Tests =NULL,na.rm=TRUE,pch=16, Shade.Color="cadetblue2",Point.Color="Black",
-Title="")
+"Previously United", "Previous Low-Level Disputes", "Previous High-Level Disputes"),
+Different.Test=RDTest, Other.Tests=c(Conventional,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","red","blue","green"), Shade.Color="cadetblue2",
+Title="",Legend=TRUE)
 dev.off()
 
 
@@ -764,5 +764,5 @@ sample=close[abs(close$MinDist)<=0.02,]
 pdf("External_Validity.pdf",width=5, height=3)
 External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper","pec","tpop","upop"), 
 Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
-"Total Population","Urban Population"),ln=1:6,YLab="ln(Value)",Title="")
+"Total Population","Urban Population"),ln=1:6,YLab="ln(Value) (scaled)",Title="")
 dev.off()

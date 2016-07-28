@@ -98,8 +98,8 @@ BalancePlot=function(Data, Treat, Covariates, Names.To.Print, Shade.Color = "bla
         if (meanC > 1000 & !(covs[i, 1] %in% Year.Covariates)) {
             meanC = prettyNum(meanC, big.mark = ",")
         }
-        mtext(text = c(meanT, meanC), side = 2, line = c(tline, 
-                                                         cline - 0.6), adj = 1, las = 2, at = aty, cex = 0.7)
+        mtext(text = c(meanT, meanC), side = 2, line = c(tline+0.7, 
+                                                         cline), adj = 1, las = 2, at = aty, cex = 0.7)
         if (aty%%2 == 1) {
             polygon(x = c(0, 0, 1, 1), y = c(aty - 0.5, aty + 
                                                  0.5, aty + 0.5, aty - 0.5), border = FALSE, col = Shade.Color)
