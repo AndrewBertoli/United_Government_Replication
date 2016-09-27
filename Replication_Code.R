@@ -9,6 +9,7 @@ library(devtools)
 install_github("easyGgplot2", "kassambara")
 library(easyGgplot2)
 library(reshape)
+library(rdd)
 
 source("RDPlot1.R")
 source("rdplot.R")
@@ -223,6 +224,9 @@ m + geom_histogram(fill="cornflowerblue",
   scale_y_continuous(breaks=seq(0, 25, 5))
 dev.off()
 
+DCdensity(close$MinDist,0)
+
+
 
 pdf("UnitedBPSlides.pdf", width=7, height=6)
 BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
@@ -329,25 +333,90 @@ f <- f+geom_vline(xintercept=0, linetype="longdash")+
                      values=c("mediumblue","firebrick3","forestgreen"))+
   xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
   axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+
-   xlim(c(-0.9,1.5))
+   xlim(c(-1,1))
 
 ggsave("UnitedBiasCorrected.pdf",width=5,height=2)
+
 
 
 f <- ggplot(cd, 
             aes(x=mean,y=measure,color=measure))
 f <- f+geom_vline(xintercept=0, linetype="longdash")+
 
-  geom_errorbarh(aes(xmax =  mean + 1.96*se, #95 confience interval
-                     xmin = mean - 1.96*se),
+  geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
                  size=1.5, height=0)+
   geom_point(stat="identity",size=4,fill="white")+
   scale_color_manual(name="",
                      values=c("mediumblue","firebrick3","forestgreen"))+
-  xlab("Estimated Treatment Effect\n(Standardized)")+ylab("")+ labs(title="Figure 7. Regression Discontinuity Estimates") 
-  +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=13),plot.title = 
-  element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2))+ xlim(c(-1,2))
-ggsave("UnitedBiasCorrectedSlides.pdf",width=7,height=3)
+  xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10), legend.position="none",axis.text.x=element_text(size=8.2),axis.text.y=element_text(size=9.2),axis.title=element_text(size=9.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold")) +
+   xlim(c(-1,1)) 
+  
+ggsave("UnitedBiasCorrectedSlides.pdf",width=6,height=1.8)
+
+
+
+
+
+# Standardized Coefficient Plot
+
+est1=as.numeric(rdrobust(scale(close$Aggression-close$PreviousAggression),close$MinDist,all=TRUE)[[3]][3,c(1,5:6)])
+
+est2=as.numeric(rdrobust(scale(close$HighDisputes-close$PreviousHighDisputes),close$MinDist,all=TRUE)[[3]][3,c(1,5:6)])
+
+est3=as.numeric(rdrobust(scale(close$LowDisputes-close$PreviousLowDisputes),close$MinDist,all=TRUE)[[3]][3,c(1,5:6)])
+
+
+
+theme_nolegend <- function (base_size = 9, base_family = "", height, width) 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          legend.position="none", 
+          axis.ticks = element_line(colour = "black"), 
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA,colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80",  colour = "grey50"), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50"))
+}
+# summary results:
+cd <- as.data.frame(matrix(NA,3,5))
+conditions <- c("All Disputes Initiated","High-Level Disputes Initiated","Low-Level Disputes Initiated")
+names(cd) <- c("mean","se","measure")
+cd$mean <- as.numeric(c(est1[1],est2[1],est3[1]))
+cd$lower <- as.numeric(c(est1[2],est2[2],est3[2]))
+cd$upper <- as.numeric(c(est1[3],est2[3],est3[3]))
+cd$ord <- c(3,2,1)
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+  geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+  geom_point(stat="identity",size=4,fill="white")+
+  scale_color_manual(name="",
+                     values=c("mediumblue","firebrick3","forestgreen"))+
+  xlab("Estimated Treatment Effect (Standardized)")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),legend.position="none",axis.text.x=element_text(size=6.49),axis.text.y=element_text(size=9.2),axis.title=element_text(size=9.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold")) +  geom_vline(xintercept=c(-1.2,-0.8,-0.5,-0.2,0.2,0.5,0.8,1.2),linetype=rep("dashed",8),colour=c("blue","royalblue","cornflowerblue","lightblue","lightpink","palevioletred1","firebrick2","firebrick"))+
+ scale_x_continuous(limits=c(-1.75,1.85),breaks=c(-1.2,-0.8,-0.5,-0.2,0,0.2,0.5,0.8,1.2),labels=c("-1.2\nvery large","-0.8\nlarge","-0.5\nmedium","-0.2\nsmall","0","0.2\nsmall","0.5\nmedium","0.8\nlarge","1.2\nvery large")) 
+  
+ggsave("UnitedBiasCorrectedStandardized.pdf",width=6,height=1.8)
+
+
+
+
+
+
+
+
+
+
 
 
 
