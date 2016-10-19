@@ -114,7 +114,7 @@ qplot(X,Y,colour=factor(tbr$United))+xlab("Percent of Seats from Controlling Leg
 ylab("Percent of Votes from Controlling Presidency")+geom_vline(xintercept=0, colour="black")+
 theme(plot.title=element_text(size=16),axis.title=element_text(size=14),axis.text=element_text(size=13))+
 geom_hline(yintercept=0, colour="black")+theme_bw()+theme(legend.position="none")+
-scale_colour_manual(values = c("royalblue4","goldenrod"))
+scale_colour_manual(values = c("royalblue4","goldenrod")) +   scale_x_continuous(breaks=seq(-.40, .50, .10),labels=c("-40%","-30%","-20%","-10%","0%","10%","20%","30%","40%","50%")) +   scale_y_continuous(breaks=seq(-.40, 1, .20),labels=c("-40%","-20%","0%","20%","40%","60%","80%","100%"))
 dev.off()
 
 
@@ -137,7 +137,7 @@ qplot(X,Y,colour=factor(tlr$United))+xlab("Percent of Seats from Controlling Hou
 ylab("Percent of Seats from Controlling Senate")+geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),
 axis.title=element_text(size=14),axis.text=element_text(size=13))+
 geom_hline(yintercept=0, colour="black")+theme(legend.position="none")+
-scale_colour_manual(values = c("royalblue4","goldenrod"))
+scale_colour_manual(values = c("royalblue4","goldenrod")) +   scale_x_continuous(breaks=seq(-.40, .20, .10),labels=c("-40%","-30%","-20%","-10%","0%","10%","20%")) +   scale_y_continuous(breaks=seq(-.40, .50, .10),labels=c("-40%","-30%","-20%","-10%","0%","10%","20%","30%","40%","50%"))
 dev.off()
 
 pdf("TwoHouseDistSlides.pdf", height=4.5, width=5.5)
@@ -147,7 +147,7 @@ xlab("Percent of Seats from Controlling House")+ylab("Percent of Seats from Cont
 geom_vline(xintercept=0, colour="black")+theme_bw()+ theme(plot.title=element_text(size=16),
 axis.title=element_text(size=14),axis.text=element_text(size=13))+geom_hline(yintercept=0, 
 colour="black")+scale_colour_manual(values = c("royalblue4","goldenrod"))+theme_bw()+
-theme(legend.position="none")
+theme(legend.position="none") 
 dev.off()
 
 tbr=data[is.na(data$PresVotes)==FALSE&is.na(data$Leg1Seats)==FALSE&is.na(data$Leg2Seats)==FALSE&is.na(data$StrongestParty)==FALSE,]
@@ -169,19 +169,19 @@ tbr$United[tbr$United=="1"]="goldenrod"
 tbr$United[tbr$United=="0"]="royalblue4"
 
 pdf("3dGraphSlides.pdf")
-scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
+scatterplot3d(X*100,Y*100,Z*100,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
 zlab="Percent of Seats from Controlling Senate",type="h",
 main="Figure 4: Strength of Most Powerful Party in Elections\nwith a President and Two Legislative Bodies",
-xlim=c(-0.4,0.4),ylim=c(-0.4,0.4),zlim=c(-0.4,0.4))
+xlim=c(-40,40),ylim=c(-40,40),zlim=c(-40,40))
 text(3.5,-1.5,"Percent of Votes from Controlling Presidency",srt=40,xpd=TRUE)
 dev.off()
 
 
 
-pdf("3dRDGraph.pdf")
-scatterplot3d(X,Y,Z,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
-zlab="Percent of Seats from Controlling Senate",type="h",main="",xlim=c(-0.4,0.4),
-ylim=c(-0.4,0.4),zlim=c(-0.4,0.4));text(3.5,-1.5,"Percent of Votes from Controlling Presidency",
+pdf("3dGraph.pdf")
+scatterplot3d(X*100,Y*100,Z*100,color=tbr$United,xlab="Percent of Seats from Controlling House",ylab="",
+zlab="Percent of Seats from Controlling Senate",type="h",main="",xlim=c(-40,40),ylim=c(-40,40),zlim=c(-40,40))
+text(3.5,-1.5,"Percent of Votes from Controlling Presidency",
 srt=40,xpd=TRUE)
 dev.off()
 
@@ -228,12 +228,55 @@ DCdensity(close$MinDist,0)
 
 
 
+
+
+
+
+
+
+
+
+
+
+pdf("UnitedBP.pdf", width=6.5, height=4.5)
+BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
+"PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
+"ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
+"Previously United", "Previous Low-Level Disputes", "Previous High-Level Disputes"),
+Different.Test=Conventional, Other.Tests=c(RDTest,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","green","blue","green"), Shade.Color="cadetblue2",
+Title="",Legend=TRUE)
+dev.off()
+
+
+democracies=data[data$Democracy==1,c("MinDist","lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop")]
+
+democracies=democracies[democracies$MinDist<=0.5,]
+
+democracies$MinDist=democracies$MinDist*100
+
+colnames(democracies)=c("MinDist","Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption","Total Population","Urban Population")
+
+democracies=democracies[,c(1,6,7,3,5,2,4)]
+
+for(i in 2:ncol(democracies)){democracies[,i]=democracies[,i]/sd(democracies[,i],na.rm=TRUE)}
+
+library(reshape);Molten <- melt(democracies, id.vars = "MinDist")
+
+ggplot(Molten, aes(x = MinDist, y = value, colour = variable)) + geom_smooth()+ xlab("Percent Above/Below United Government")+ 
+ylab("ln(Value)") + geom_vline(xintercept=0) + theme(axis.title = element_text(size=13),axis.text = element_text(size=13),legend.title=element_blank())+ guides(fill = guide_legend(keywidth = 0.1, keyheight = 1)) + annotate("text",label="Divided",x=-40,y=1.2,size=5)+ annotate("text",label="United",x=26,y=1.2,size=5)+scale_x_continuous(breaks=seq(-75,50,25),labels=c("-75%","-50%","-25%","0%","25%","50%"))#+theme(legend.position="bottom", legend.box = "horizontal")
+
+ggsave("UnitedCovs.pdf",width=6,height=5)
+
+
+
+
+
 pdf("UnitedBPSlides.pdf", width=7, height=6)
 BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
 "PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
 "ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
 "Previously United", "Previous Low-Level Disputes per Year", "Previous High-Level Disputes per Year"),
-Different.Test=RDTest, Other.Tests=c(Conventional,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","red","blue","green"), Shade.Color="cadetblue2",
+Different.Test=Conventional, Other.Tests=c(RDTest,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","red","blue","green"), Shade.Color="cadetblue2",
 Title="Figure 6. Testing for Balance at Cutpoint")
 dev.off()
 
@@ -242,9 +285,76 @@ BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop"
 "PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
 "ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
 "Previously United", "Previous Low-Level Disputes", "Previous High-Level Disputes"),
-Different.Test=RDTest, Other.Tests=c(Conventional,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","red","blue","green"), Shade.Color="cadetblue2",
+Different.Test=Conventional, Other.Tests=c(RDTest,Polynomial2),Built.In.Tests =NULL,na.rm=TRUE,pch=c(16,17,18,14),Point.Color=c("black","green","blue","green"), Shade.Color="cadetblue2",
 Title="",Legend=TRUE)
 dev.off()
+
+
+
+
+
+pdf("UnitedBP2.pdf", width=6.5, height=4.5)
+BalancePlot(close,close$United, c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
+"PreviousLowDisputes","PreviousHighDisputes"),c("ln(Iron and Steel Production)","ln(Military Expenditures)",
+"ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
+"Previously United", "Previous Low-Level Disputes", "Previous High-Level Disputes"),
+Different.Test=Conventional,Built.In.Tests =NULL,na.rm=TRUE, Shade.Color="cadetblue2",
+Title="")
+dev.off()
+
+
+
+
+
+covs=c("lnirst","lnmilex","lnmilper","lnpec","lntpop","lnupop","PrevUnited",
+"PreviousLowDisputes","PreviousHighDisputes")
+
+est=matrix(NA,ncol=3,nrow=length(covs))
+
+for(i in 1:length(covs)){
+est[i,]=as.numeric(rdrobust(close[,covs[i]],close$MinDist,all=TRUE)[[3]][1,c(1,5:6)])/sd(close[,covs[i]],na.rm=TRUE)}
+
+
+theme_nolegend <- function (base_size = 9, base_family = "", height, width) 
+{
+  theme_grey(base_size = base_size, base_family = base_family) %+replace% 
+    theme(axis.text = element_text(size = rel(0.8)), 
+          legend.position="none", 
+          axis.ticks = element_line(colour = "black"), 
+          legend.key = element_rect(colour = "grey80"), 
+          panel.background = element_rect(fill = "white", colour = NA), 
+          panel.border = element_rect(fill = NA,colour = "grey50"), 
+          panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+          panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+          strip.background = element_rect(fill = "grey80",  colour = "grey50"), 
+          strip.background = element_rect(fill = "grey80", colour = "grey50"))
+}
+
+cd <- as.data.frame(matrix(NA,length(covs),5))
+conditions <- c("ln(Iron and Steel Production)","ln(Military Expenditures)",
+"ln(Military Personnel)","ln(Energy Consumption)","ln(Total Population)","ln(Urban Population)",
+"Previously United", "Previous Low-Level Disputes", "Previous High-Level Disputes")
+names(cd) <- c("mean","upper","lower","ord","measure")
+cd$mean <- as.numeric(est[,1])
+cd$lower <- as.numeric(est[,3])
+cd$upper <- as.numeric(est[,2])
+cd$ord <- c(length(covs):1)
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+balanceplot1 <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+  geom_errorbarh(aes(xmax =  upper, 
+                     xmin = lower),
+                 size=1.5, height=0)+
+  geom_point(stat="identity",size=4,fill="white")+
+  xlab("Difference (Standardized)")+ylab("") +  theme_nolegend()+theme(axis.text=element_text(size=10),axis.title=element_text(size=12),axis.title.x = element_text(hjust=0.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold"))+xlim(-2.5,2.5)
+
+ggsave("UnitedBP3.pdf",width=5,height=2.5)
+
 
 
 
@@ -433,9 +543,66 @@ RDPlot(close$MinDist,close$HighDisputes-close$PreviousHighDisputes, Bandwidth=Ba
 Main="", ylab="Change in High-Level Disptues Initiated per Year", xlab="Vote Share from United Government", 
 Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-2,2),cex.main=1.2, cex.lab=0.78, Breaks=seq(-.1,1,.02),
 Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),LabelRawData=TRUE,
-Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear")
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear",Shade.Color = "gray56")
 
 dev.off()
+
+
+
+
+
+pdf("UnitedRD1.pdf", width=5, height=5)
+
+Boots=10000
+
+Bandwidth=rdbwselect(close$Aggression-close$PreviousAggression,close$MinDist)$bws[1]
+
+RDPlot(close$MinDist,close$Aggression-close$PreviousAggression, Bandwidth=Bandwidth,NBoots=Boots, 
+Main="", ylab="Change in Disptues Initiated per Year", xlab="Vote Share from United Government", 
+Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-3.5,3.5),cex.main=1.2, cex.lab=1.1, Breaks=seq(-.1,1,.02),
+Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear",Shade.Color = "gray56")
+
+dev.off()
+
+
+
+close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[1]=close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[1]+0.07
+close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[2]=close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[2]-0.07
+
+pdf("UnitedRD2.pdf", width=5, height=5)
+
+Boots=10000
+
+Bandwidth=rdbwselect(close$HighDisputes-close$PreviousHighDisputes,close$MinDist)$bws[1]
+
+RDPlot(close$MinDist,close$HighDisputes-close$PreviousHighDisputes, Bandwidth=Bandwidth,NBoots=Boots, 
+Main="", ylab="Change in High-Level Disptues Initiated per Year", xlab="Vote Share from United Government", 
+Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-2,2),cex.main=1.2, cex.lab=0.84, Breaks=seq(-.1,1,.02),
+Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear",Shade.Color = "gray56")
+
+dev.off()
+
+close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[1]=close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[1]-0.07
+close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[2]=close[abs(close$MinDist)<0.01&close$MinDist>0,]$HighDisputes[2]+0.07
+
+
+pdf("UnitedRD3.pdf", width=5, height=5)
+
+Boots=10000
+
+Bandwidth=rdbwselect(close$LowDisputes-close$PreviousLowDisputes,close$MinDist)$bws[1]
+
+RDPlot(close$MinDist,close$LowDisputes-close$PreviousLowDisputes, Bandwidth=Bandwidth,NBoots=Boots, 
+Main="", ylab="Change in Low-Level Disptues Initiated per Year", xlab="Vote Share from United Government", 
+Tick.Marks = c(-0.1, -0.05, 0, 0.05, 0.1), ylim=c(-3.5,3.5),cex.main=1.2, cex.lab=0.84, Breaks=seq(-.1,1,.02),
+Plot.Raw.Data=TRUE,Plot.Means=FALSE, Raw.Data.Colors=c("royalblue3","goldenrod"),
+Labels=paste(close$Country,close$Year),RawDataLabelSize = 0.75, Smoother = "Local Linear",Shade.Color = "gray56")
+
+dev.off()
+
+
 
 
 
@@ -581,6 +748,44 @@ rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=
 rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.03)
 rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.04)
 rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=0.05)
+
+
+H=seq(0.005,0.05,0.005)
+
+est=matrix(NA,ncol=3,nrow=length(H))
+
+for(i in 1:length(H)){
+output=rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,all=TRUE,h=H[i])
+est[i,]=as.numeric(c(output[[3]][3,1],output[[3]][3,5],output[[3]][3,6]))}
+
+cd <- as.data.frame(matrix(NA,length(H),5))
+conditions <- as.character(H)
+names(cd) <- c("mean","se","measure")
+cd$mean <- est[,1]
+cd$lower <- est[,2]
+cd$upper <- est[,3]
+cd$ord <- length(H):1
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+geom_point(stat="identity",size=4,fill="white")+
+scale_color_gradient(name="",
+                    )+
+xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2),axis.text.y=element_text(colour=c(rep("black",(length(C)-1)/2),"blue",rep("black",(length(C)-1)/2))))+
+xlim(c(-1.25,1.25)) + ylab("Cutpoint")
+   
+ggsave("ShiftingBandwidth.pdf",width=3,height=3)
+
+
+
 
 
 # L2 Distance
@@ -782,12 +987,12 @@ m <- ggplot(data[data$Type!=4&data$Democracy==0&data$MinDist!=0,], aes(x=MinDist
 m + geom_histogram(fill="cornflowerblue",
                    binwidth=2, color="black",
                    origin = -140.001)+
-  theme_bw()+theme(axis.title = element_text(size=16),plot.title=element_text(size=20))+
+  theme_bw()+theme(axis.title = element_text(size=20),axis.text = element_text(size=16))+
   geom_vline(xintercept=0, colour="red")+
   xlab("Percentage of Seats/Votes Away from United Government")+
-  ylab("Density") + labs(title="")+
-  scale_x_continuous(breaks=seq(-100, 100, 20))+
-  scale_y_continuous(breaks=seq(0, 10, 1))
+  ylab("Count") + labs(title="")+
+  scale_x_continuous(breaks=seq(-30, 20, 10),labels=c("-30%","-20%","-10%","0%","10%","20%"),limits=c(-40,22))+
+  scale_y_continuous(breaks=seq(0, 10, 5),limits=c(0,10))
 dev.off()
 
 
@@ -835,3 +1040,200 @@ External_Validity(Sample=sample,Population=alldems,Covs=c("irst","milex","milper
 Names=c("Iron and Steel Production","Military Expenditures","Military Personel","Energy Consumption",
 "Total Population","Urban Population"),ln=1:6,YLab="ln(Value) (scaled)",Title="")
 dev.off()
+
+
+
+
+
+
+
+
+
+
+
+C=rep(9)
+
+rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,C=-0.8,all=TRUE)
+
+
+
+
+
+# Coefficient Plot
+C=seq(-0.05,0.05,0.01)
+
+est=matrix(NA,ncol=3,nrow=length(C))
+
+for(i in 1:length(C)){
+output=rdrobust(close$HighDisputes-close$PreviousHighDisputes,close$MinDist,c=C[i],all=TRUE)
+est[i,]=as.numeric(c(output[[3]][3,1],output[[3]][3,5],output[[3]][3,6]))}
+# summary results:
+cd <- as.data.frame(matrix(NA,length(C),5))
+conditions <- as.character(C)
+names(cd) <- c("mean","se","measure")
+cd$mean <- est[,1]
+cd$lower <- est[,2]
+cd$upper <- est[,3]
+cd$ord <- length(C):1
+cd$measure <- factor(conditions, levels=conditions[order(cd$ord)])
+# make the graph
+library(ggplot2)
+f <- ggplot(cd, 
+            aes(x=mean,y=measure,color=measure))
+f <- f+geom_vline(xintercept=0, linetype="longdash")+
+
+geom_errorbarh(aes(xmax =  upper, #95 confience interval
+                     xmin = lower),
+                 size=1.5, height=0)+
+geom_point(stat="identity",size=4,fill="white")+
+scale_color_manual(name="",
+                     values=c(rep("black",(length(C)-1)/2),"blue",rep("black",(length(C)-1)/2)))+
+xlab("Estimated Treatment Effect")+ylab("")+ labs(title="") +  theme_nolegend()+theme(axis.text=element_text(size=10),
+axis.title=element_text(size=11.5),plot.title = element_text(lineheight=1.8,size=rel(1.5),face="bold",hjust=1.835,vjust=2),axis.text.y=element_text(colour=c(rep("black",(length(C)-1)/2),"blue",rep("black",(length(C)-1)/2))))+
+xlim(c(-1.25,1.25)) + ylab("Cutpoint")
+   
+ggsave("ShiftingCutpoint.pdf",width=3,height=3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+plot1=ggplot()+geom_smooth(aes(close[close$MinDist<0,]$MinDist,close[close$MinDist<0,]$Aggression-close[close$MinDist<0,]$PreviousAggression),method="loess",span=7.5700)+ geom_smooth(aes(close[close$MinDist>0,]$MinDist,close[close$MinDist>0,]$Aggression-close[close$MinDist>0,]$PreviousAggression),method="loess",span=7.5700)
+
+plot2=ggplot()+geom_smooth(aes(close[close$MinDist<0,]$MinDist,close[close$MinDist<0,]$HighDisputes-close[close$MinDist<0,]$PreviousHighDisputes),method="loess",span=7.5700)+ geom_smooth(aes(close[close$MinDist>0,]$MinDist,close[close$MinDist>0,]$HighDisputes-close[close$MinDist<0,]$PreviousHighDisputes),method="loess",span=7.5700)
+
+plot3=ggplot()+geom_smooth(aes(close[close$MinDist<0,]$MinDist,close[close$MinDist<0,]$LowDisputes-close[close$MinDist<0,]$PreviousLowDisputes),method="loess",span=7.5700)+ geom_smooth(aes(close[close$MinDist>0,]$MinDist,close[close$MinDist>0,]$LowDisputes-close[close$MinDist<0,]$PreviousLowDisputes),method="loess",span=7.5700)
+
+plot_grid(plot1,plot2,plot3,ncol=3)
+
+
+
+# Dif-in-dif
+
+dems=data[data$Democracy==1&is.na(data$MinDist)==FALSE&data$Type!=4,]
+d_to_u=dems[which(dems$United==1&dems$PrevUnited==0),]
+u_to_d=dems[which(dems$United==0&dems$PrevUnited==1),]
+
+d_to_u=close[which(close$United==1&close$MinDist<=0.05),]
+u_to_d=close[which(close$United==0&abs(close$MinDist)<=0.05),]
+
+highs=data.frame(matrix(0,ncol=48,nrow=nrow(d_to_u)))
+for(i in 1:ncol(highs)){
+for(j in 1:nrow(highs)){
+cases=which(d_to_u[j,c("Date1", "Date2", "Date3", "Date4", "Date5","Date6", "Date7", "Date8", "Date9", "Date10",
+"Date11", "Date12", "Date13", "Date14", "Date15", "Date16", "Date17", "Date18", "Date19", "Date20")]%in%(((i-24)*30):((i-25)*30+1)))	
+highs[j,i]=length(cases)}}
+
+library(reshape);d_to_u_molten_all <- melt(highs)
+
+d_to_u_molten_all$Date=as.numeric(d_to_u_molten_all$variable)
+
+plot1=ggplot(d_to_u_molten_all[d_to_u_molten_all$Date<24.5,])+geom_smooth(aes(Date,value),method="loess",formula=y~poly(x,1),span=7.8770)+ geom_smooth(aes(d_to_u_molten_all[d_to_u_molten_all$Date>24.5,]$Date,d_to_u_molten_all[d_to_u_molten_all$Date>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.8770)
+
+
+
+
+highs=data.frame(matrix(0,ncol=48,nrow=nrow(u_to_d)))
+for(i in 1:ncol(highs)){
+for(j in 1:nrow(highs)){
+cases=which(u_to_d[j,c("Date1", "Date2", "Date3", "Date4", "Date5","Date6", "Date7", "Date8", "Date9", "Date10",
+"Date11", "Date12", "Date13", "Date14", "Date15", "Date16", "Date17", "Date18", "Date19", "Date20")]%in%(((i-24)*30):((i-25)*30+1)))	
+highs[j,i]=length(cases)}}
+
+u_to_d_molten_all <- melt(highs)
+
+u_to_d_molten_all$Date=as.numeric(u_to_d_molten_all$variable)
+
+plot2=ggplot(u_to_d_molten_all[u_to_d_molten_all$Date<24.5,])+geom_smooth(aes(Date,value),method="loess",formula=y~poly(x,1),span=7.5700)+ geom_smooth(aes(u_to_d_molten_all[u_to_d_molten_all$Date>24.5,]$Date,u_to_d_molten_all[u_to_d_molten_all$Date>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.5700)
+
+
+
+
+highs=data.frame(matrix(0,ncol=48,nrow=nrow(d_to_u)))
+for(i in 1:ncol(highs)){
+for(j in 1:nrow(highs)){
+cases=which(d_to_u[j,c("HDate1", "HDate2", "HDate3", "HDate4", "HDate5","HDate6", "HDate7", "HDate8", "HDate9", "HDate10",
+"HDate11", "HDate12", "HDate13", "HDate14", "HDate15", "HDate16", "HDate17", "HDate18", "HDate19", "HDate20")]%in%(((i-24)*30):((i-25)*30+1)))	
+highs[j,i]=length(cases)}}
+
+d_to_u_molten_high <- melt(highs)
+
+d_to_u_molten_high$HDate=as.numeric(d_to_u_molten_high$variable)
+
+plot3=ggplot(d_to_u_molten_high[d_to_u_molten_high$HDate<24.5,])+geom_smooth(aes(HDate,value),method="loess",formula=y~poly(x,1),span=7.8770)+ geom_smooth(aes(d_to_u_molten_high[d_to_u_molten_high$HDate>24.5,]$HDate,d_to_u_molten_high[d_to_u_molten_high$HDate>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.8770)
+
+
+
+
+highs=data.frame(matrix(0,ncol=48,nrow=nrow(u_to_d)))
+for(i in 1:ncol(highs)){
+for(j in 1:nrow(highs)){
+cases=which(u_to_d[j,c("HDate1", "HDate2", "HDate3", "HDate4", "HDate5","HDate6", "HDate7", "HDate8", "HDate9", "HDate10",
+"HDate11", "HDate12", "HDate13", "HDate14", "HDate15", "HDate16", "HDate17", "HDate18", "HDate19", "HDate20")]%in%(((i-24)*30):((i-25)*30+1)))	
+highs[j,i]=length(cases)}}
+
+u_to_d_molten_high <- melt(highs)
+
+u_to_d_molten_high$HDate=as.numeric(u_to_d_molten_high$variable)
+
+plot4=ggplot(u_to_d_molten_high[u_to_d_molten_high$HDate<24.5,])+geom_smooth(aes(HDate,value),method="loess",formula=y~poly(x,1),span=7.8770)+ geom_smooth(aes(u_to_d_molten_high[u_to_d_molten_high$HDate>24.5,]$HDate,u_to_d_molten_high[u_to_d_molten_high$HDate>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.8770)
+
+
+
+d_to_u_molten_low=d_to_u_molten_all 
+
+d_to_u_molten_low$value=d_to_u_molten_all$value-d_to_u_molten_high$value 
+
+plot5=ggplot(d_to_u_molten_low[d_to_u_molten_low$Date<24.5,])+geom_smooth(aes(Date,value),method="loess",formula=y~poly(x,1),span=7.8770)+ geom_smooth(aes(d_to_u_molten_low[d_to_u_molten_low$Date>24.5,]$Date,d_to_u_molten_low[d_to_u_molten_low$Date>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.8770)
+
+
+
+
+u_to_d_molten_low=u_to_d_molten_all 
+
+u_to_d_molten_low$value=u_to_d_molten_all$value-u_to_d_molten_high$value 
+
+plot6=ggplot(u_to_d_molten_low[u_to_d_molten_low$Date<24.5,])+geom_smooth(aes(Date,value),method="loess",formula=y~poly(x,1),span=7.8770)+ geom_smooth(aes(u_to_d_molten_low[u_to_d_molten_low$Date>24.5,]$Date,u_to_d_molten_low[u_to_d_molten_low$Date>24.5,]$value),method="loess",formula=y~poly(x,1),span=7.8770)
+
+plot_grid(plot1,plot2,plot3,plot4,plot5,plot6,ncol=2)
+
+
+
+
+
+
+Get rid of Uni Parli systems!!!
+dems=data[data$Democracy==1&is.na(data$MinDist)==FALSE&data$Type!=4,]
+d_to_u=dems[which(dems$United==1&dems$PrevUnited==0),]
+u_to_d=dems[which(dems$United==0&dems$PrevUnited==1),]
+
+
+dates=c("Date1","Date2","Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10","Date11","Date12","Date13",
+"Date14","Date15","Date16","Date17","Date18","Date19","Date20")
+d_to_u_dates=as.numeric(unlist(as.vector(d_to_u[,dates]))[is.na(unlist(as.vector(d_to_u[,dates])))==FALSE])
+u_to_d_dates=as.numeric(unlist(as.vector(u_to_d[,dates]))[is.na(unlist(as.vector(u_to_d[,dates])))==FALSE])
+tsdat=data.frame(rbind(cbind(d_to_u_dates,0),cbind(u_to_d_dates,1)));colnames(tsdat)=c("Date","Status")
+tsdat[,1]=tsdat[,1]-1/4 # Recentering the graph
+
+
+pdf("UnitedTimeSeries.pdf", height=4, width=5.5)
+ggplot2.histogram(data=tsdat,xName="Date",groupName="Status",alpha=0.5,binwidth=1/2,brewerPalette="Paired",groupColors=c('goldenrod','royalblue4'))+
+geom_vline(xintercept=-1/4)+xlab("")+ylab("Military Disputes Initiated")+xlab("Time")+guides(colour=FALSE)+ geom_rect(aes(xmin = -1.0375, 
+xmax = -0.42, ymin = 5.25, ymax = 6.1),fill="white",colour="black") + annotate("text", x = c( -0.706, -0.69), y = c(5.875, 5.525), label = 
+c("Barely United", "Barely Divided"), size=c(4, 4)) + theme(plot.title = element_text(lineheight=.8, face="bold",size=14.7),
+axis.title=element_text(size=13.7),axis.text.x=element_text(size=13.7),axis.text.y=element_text(size=11.7))+theme_bw()+ 
+theme(legend.position="none")+ geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.78, ymax = 5.955),fill="goldenrod",colour="white",alpha=0.01)+
+geom_rect(aes(xmin = -0.9825, xmax = -0.9425, ymin = 5.43, ymax = 5.595),fill="royalblue4",colour="white",alpha=0.016)+
+scale_x_continuous(breaks=c(-0.5625,0.4375),labels=c("Previous Period","Period in Power"))+scale_y_continuous(breaks=0:6)+
+annotate("text",y=4,x=-0.11,label="Election", angle=90,size=5)
+dev.off()
+

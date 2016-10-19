@@ -477,11 +477,12 @@ BalancePlot2=function(Data, Treat, Covariates, Names.To.Print, Shade.Color = "bl
 RDTest=function(v){
 output1=rdpointest(v,close$MinDist)
 output2=as.numeric(rdrobust(v,close$MinDist,all=TRUE)[[3]][[3,4]])
-return(c(output1[1],output1[2],output2))}
+return(output2)}
 
 Conventional=function(v){
-output2=as.numeric(rdrobust(v,close$MinDist,all=TRUE)[[3]][1,4])
-return(output2)}
+output1=rdpointest(v,close$MinDist)
+output2=as.numeric(rdrobust(v,close$MinDist,all=TRUE)[[3]][[1,4]])
+return(c(output1[1],output1[2],output2))}
 
 
 
